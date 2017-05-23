@@ -14,12 +14,13 @@ int main(){
 }
 int menu(){
   int x;
+  int kod=1;
 while(1){
-    printf("eklemek icin 1,\nlistelemek icin 2,\nkaydi duzenlemek icin 3,\nnumara ile arama yapmak icin 4,\nisme gore arama yapmak icin 5,\nkayit silmek icin 6,\nciklmak icin 6,\nbasiniz ");
+    printf("\t\t\t\t\t----------------------------------\n\t\t\t\t\t|eklemek icin 1,\t\t|\n\t\t\t\t\t|listelemek icin 2,\t\t|\n\t\t\t\t\t|kaydi duzenlemek icin 3,\t|\n\t\t\t\t\t|numara ile arama yapmak icin 4,|\n\t\t\t\t\t|isme gore arama yapmak icin 5,\t|\n\t\t\t\t\t|kayit silmek icin 6,\t\t|\n\t\t\t\t\t|ciklmak icin 7,\t\t|\n\t\t\t\t\t|basiniz\t\t\t|\n\t\t\t\t\t---------------------------------- ");
     scanf("%d",&x);
-if(x==1)ekle();
+if(x==1){ekle(kod);kod++; }
 else if(x==2) goster();
-//else if(x==3) update();
+else if(x==3) update();
 else if(x==4)noarama();
 else if(x==5)isimarama();
 else if(x==6)sil();
@@ -32,28 +33,29 @@ exit(1);
 }
 
 
-int ekle(){
+int ekle(int kod){
     int i;
     FILE *dosya;
     telefon tel;
-    tel.kod=0;
-    for(i=0;i<1000;i++){
-        tel.kod++;
-        break;
-    }
+
+
     dosya=fopen("TelefonRehber.txt","a");
-printf("isim ce soyisim giriniz girin");
+printf("isim giriniz");
   scanf("%s",tel.isim);
    printf("tel no girin");
     scanf("%d",&tel.numara);
+    printf("kodu girin:");
+    scanf("%d",&tel.kod);
 
 fprintf(dosya,"\n%s\t%d\t%d",&tel.isim,tel.numara,tel.kod);
-    fclose(dosya);}
+    fclose(dosya);
+    system("CLS");}
 
 
 int goster(){
     FILE *dosya;
 telefon tel;
+int bas;
 
     dosya=fopen("TelefonRehber.txt","r");
  while(!feof(dosya)){
@@ -63,8 +65,11 @@ fscanf(dosya,"%s\t\t%d\t\t%d",&tel.isim,&tel.numara,&tel.kod);
     printf("\nno=%d",tel.numara);
     printf("\nid=%d\n\n",tel.kod);
 
+
     }
-fclose(dosya);}
+      scanf("%d",&bas);
+fclose(dosya);
+system("CLS");}
 
 int isimarama(){
 
@@ -76,19 +81,22 @@ int bulunan=0;
 int tekrar;
 
             dosya=fopen("TelefonRehber.txt","r");
-            printf("\naranacak ad� girin\t");
+            printf("\naranacak adý girin\t");
             scanf("%s",&aranacakad);
             while(!feof(dosya)){
 
 
         fscanf(dosya, "%s%d%d", &tel.isim, &tel.numara, &tel.kod);
+char bas;
+        if(!strcmp(aranacakad, tel.isim))//aranan isim bulunuyor
 
-        if(!strcmp(aranacakad, tel.isim))
         { // bbulundu!
             printf("%s\t", tel.isim);
             printf("%d\t", tel.numara);
             printf("%d\n", tel.kod);
             bulunan ++;
+            scanf("%s",&bas);
+            system("CLS");
             menu();
 
         }}
@@ -97,7 +105,7 @@ int tekrar;
             printf("bulunamadi,tekrar denemek icin 1,ana menuye donmek icin 2 basiniz\n");
               scanf("%d",&tekrar);
             if(tekrar==1)isimarama();
-            else if(tekrar==2)menu();
+            else if(tekrar==2){system("CLS");menu();}
             else exit(1);
     }
     else exit(1);
@@ -124,13 +132,15 @@ int tekrar;
 
 
         fscanf(dosya, "%s%d%d", &tel.isim, &tel.numara, &tel.kod);
-
-        if(!strcmp(&aranacakno,&tel.numara))
+char bas;
+        if(!strcmp(&aranacakno,&tel.numara))//aranan  no bulunuyor
         { // bbulundu!
             printf("%s\t", tel.isim);
             printf("%d\t", tel.numara);
             printf("%d\n", tel.kod);
             bulunan ++;
+            scanf("%s",&bas);
+            system("CLS");
             menu();
 
 }        }
@@ -139,51 +149,90 @@ int tekrar;
             printf("bulunamadi.tekrar arama yapmak icin 1,ana menuye donmek icin 2 ye basiniz\n");
             scanf("%d",&tekrar);
             if(tekrar==1)noarama();
-            else if(tekrar==2)menu();
+            else if(tekrar==2){system("CLS");menu();}
             else exit(1);
     }
     else exit(1);
 
-
+system("CLS");
 
     return 0;
 }
 
 
 int sil()
-{
-    FILE *dosya,*dosya1;
-    dosya=fopen("TelefonRehber.txt","r");
-    dosya1=fopen("TelefonRehber1.txt","w");
-    telefon tel;
-char arancak[15];
-int okundu=0;
-printf("aranacak ismi girin");
-scanf("%s",&arancak);
-while(!feof(dosya)){
+{FILE *dosya,*yeni; //dosya işaretçileri tanımlama
+char aranan[15];
+telefon tel;
 
-fscanf(dosya,"%s\t%d\t%d",&tel.isim,&tel.numara,&tel.kod);
-    if(strcmp(arancak,tel.isim)){
+printf("Silinecek kayit adi ? :");
+scanf("%s",&aranan);//silincek isim aranıyor
 
-          fprintf(dosya1,"%s\t%d\t%d\t",&tel.isim,tel.numara,tel.kod);
-    okundu++;
-break;
-    }
-    else
-        printf("bulunamdi");
+dosya=fopen("TelefonRehber.txt","r");
+yeni=fopen("rehber1.txt","w");
 
-}
-if(okundu!=0){
-    printf("silindi");
+   while(!feof(dosya)){
 
-}
-else
-    printf("silinmedi");
+      fscanf(dosya,"%s%d%d",tel.isim,&tel.numara,&tel.kod);
+
+      if(strstr(tel.isim,aranan)){
+            fscanf(dosya,"%s%d%d",tel.isim,&tel.numara,&tel.kod);
+
+      }
+
+      fprintf(yeni,"\n%s\t%d\t%d",&tel.isim,tel.numara,tel.kod);//arancak haricindekileri yazdırıyorum
+
+   }
+
 fclose(dosya);
-fclose(dosya1);
-remove("TelefonRehber.txt");
-rename("TelefonRehber1.txt","TelefonRehber.txt");
+fclose(yeni);
 
-
-    return 1;
+remove("TelefonRehber.txt");//asıl dosyayı siliyorum
+rename("rehber1.txt","TelefonRehber.txt");//yeni dosyanın adını degistirioyrum
+system("CLS");
+return 0;
 }
+
+int update(){
+FILE *dosya,*yeni; //dosya işaretçileri tanımlama
+char aranan[15];
+telefon tel;
+int kod;
+printf("update yapilacak kayit adi ? :");
+scanf("%s",&aranan);
+
+dosya=fopen("TelefonRehber.txt","r");
+yeni=fopen("rehber1.txt","w");
+int bulunan=0;
+   while(!feof(dosya)){//okuyorum
+
+      fscanf(dosya,"%s%d%d",tel.isim,&tel.numara,&tel.kod);
+
+      if(strstr(tel.isim,aranan)){
+            fscanf(dosya,"%s%d%d",tel.isim,&tel.numara,&tel.kod);
+           bulunan++;}
+           char bas;
+  if(bulunan==0){printf("boyle kayit bulunamadi");scanf("%s",&bas);system("CLS");menu();}
+
+      fprintf(yeni,"\n%s\t%d\t%d",&tel.isim,tel.numara,tel.kod);//o kayıt haric digerlerini yeni dosyaya aktarırıyorum
+
+   }
+
+
+fclose(dosya);
+fclose(yeni);
+
+remove("TelefonRehber.txt");
+rename("rehber1.txt","TelefonRehber.txt");
+//yeniden ekleme kısmı
+    dosya=fopen("TelefonRehber.txt","r+");
+printf("isim ve soyisim giriniz girin");
+  scanf("%s",tel.isim);
+   printf("tel no girin");
+    scanf("%d",&tel.numara);
+   printf("yeni kodu girin");
+    scanf("%d",&tel.kod);
+
+fprintf(dosya,"\n%s\t%d\t%d",&tel.isim,tel.numara,tel.kod);
+    fclose(dosya);
+   system("CLS");}
