@@ -58,9 +58,16 @@ telefon tel;
 int bas;
 
     dosya=fopen("TelefonRehber.txt","r");
- while(!feof(dosya)){
 
-fscanf(dosya,"%s\t\t%d\t\t%d",&tel.isim,&tel.numara,&tel.kod);
+ while(!feof(dosya)){
+    fscanf(dosya,"%s\t\t%d\t\t%d",&tel.isim,&tel.numara,&tel.kod);
+if(tel.numara==1954213952){//kayıt olmayınca rastgele kayıt olusturuyordu bunu engelledim
+    printf("kayit yok");
+    printf("\nana menuyu donmek icin bir tusa basiniz");
+    scanf("%d",&bas);
+    system("CLS");
+    menu();
+}
     printf("\nadi=%s",tel.isim);
     printf("\nno=%d",tel.numara);
     printf("\nid=%d\n\n",tel.kod);
@@ -81,25 +88,29 @@ int bulunan=0;
 int tekrar;
 
             dosya=fopen("TelefonRehber.txt","r");
-            printf("\naranacak adý girin\t");
-            scanf("%s",&aranacakad);
+            printf("\naranacak adi girin\t");
+            scanf("%s",aranacakad);
             while(!feof(dosya)){
 
 
         fscanf(dosya, "%s%d%d", &tel.isim, &tel.numara, &tel.kod);
 char bas;
-        if(!strcmp(aranacakad, tel.isim))//aranan isim bulunuyor
+        if(!strcmp(tel.isim,aranacakad))//aranan isim bulunuyor
 
         { // bbulundu!
-            printf("%s\t", tel.isim);
-            printf("%d\t", tel.numara);
+            printf("adi\t\tnumara\t\tkodu\n");
+            printf("----            ------          -----\n");
+            printf("%s\t\t", tel.isim);
+            printf("%d\t\t", tel.numara);
             printf("%d\n", tel.kod);
             bulunan ++;
-            scanf("%s",&bas);
-            system("CLS");
-            menu();
 
-        }}
+
+        }
+        printf("\n cikmak icin bir tusa basin");
+        scanf("%s",&bas);
+            system("CLS");
+            menu();}
 
      if(bulunan==0){
             printf("bulunamadi,tekrar denemek icin 1,ana menuye donmek icin 2 basiniz\n");
@@ -135,10 +146,13 @@ int tekrar;
 char bas;
         if(!strcmp(&aranacakno,&tel.numara))//aranan  no bulunuyor
         { // bbulundu!
-            printf("%s\t", tel.isim);
-            printf("%d\t", tel.numara);
+               printf("adi\t\tnumara\t\tkodu\n");
+            printf("----            ------          -----\n");
+            printf("%s\t   \t", tel.isim);
+            printf("%d\t   \t", tel.numara);
             printf("%d\n", tel.kod);
             bulunan ++;
+            printf("\n cikmak icin bir tusa basin");
             scanf("%s",&bas);
             system("CLS");
             menu();
@@ -162,27 +176,41 @@ system("CLS");
 
 int sil()
 {FILE *dosya,*yeni; //dosya işaretçileri tanımlama
-char aranan[15];
+int aranan;
 telefon tel;
 
-printf("Silinecek kayit adi ? :");
-scanf("%s",&aranan);//silincek isim aranıyor
+printf("Silinecek kayit kodu nedir ? :");
+scanf("%d",&aranan);//silincek isim aranıyor
 
 dosya=fopen("TelefonRehber.txt","r");
 yeni=fopen("rehber1.txt","w");
+int bulunan=0,ara;
 
    while(!feof(dosya)){
 
       fscanf(dosya,"%s%d%d",tel.isim,&tel.numara,&tel.kod);
 
-      if(strstr(tel.isim,aranan)){
+      if(tel.kod==aranan){
             fscanf(dosya,"%s%d%d",tel.isim,&tel.numara,&tel.kod);
+            bulunan++;
 
+      }
+      if(bulunan==0){
+        printf("kayit bulunamadi \ntekrar girmek icin 1'e,ana menuye donmek icin 2'ye basiniz");
+        scanf("%d",&ara);
+        if(ara==1){system("CLS");sil(); }
+        else if(ara==2){system("CLS");menu();}
+        else
+            exit(0);
       }
 
       fprintf(yeni,"\n%s\t%d\t%d",&tel.isim,tel.numara,tel.kod);//arancak haricindekileri yazdırıyorum
 
    }
+   char bas;
+   printf("kayit silindi\n");
+   printf("ana menuye donmek icin bir tusa basin");
+   scanf("%s",&bas);
 
 fclose(dosya);
 fclose(yeni);
@@ -210,9 +238,14 @@ int bulunan=0;
 
       if(strstr(tel.isim,aranan)){
             fscanf(dosya,"%s%d%d",tel.isim,&tel.numara,&tel.kod);
-           bulunan++;}
+            bulunan++;}
            char bas;
-  if(bulunan==0){printf("boyle kayit bulunamadi");scanf("%s",&bas);system("CLS");menu();}
+  if(bulunan==0){  printf("kayit bulunamadi \ntekrar girmek icin 1'e,ana menuye donmek icin 2'ye basiniz");
+        scanf("%d",&bas);
+        if(bas==1){system("CLS");update(); }
+        else if(bas==2){system("CLS");menu();}
+        else
+            exit(0);}
 
       fprintf(yeni,"\n%s\t%d\t%d",&tel.isim,tel.numara,tel.kod);//o kayıt haric digerlerini yeni dosyaya aktarırıyorum
 
@@ -221,9 +254,9 @@ int bulunan=0;
 
 fclose(dosya);
 fclose(yeni);
-
 remove("TelefonRehber.txt");
 rename("rehber1.txt","TelefonRehber.txt");
+
 //yeniden ekleme kısmı
     dosya=fopen("TelefonRehber.txt","r+");
 printf("isim ve soyisim giriniz girin");
